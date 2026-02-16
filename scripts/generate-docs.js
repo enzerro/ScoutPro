@@ -1,5 +1,12 @@
 const PDFDocument = require("pdfkit");
 const fs = require("fs");
+const path = require("path");
+
+// Ensure public directory exists
+const publicDir = path.join(__dirname, "..", "public");
+if (!fs.existsSync(publicDir)) {
+  fs.mkdirSync(publicDir, { recursive: true });
+}
 
 const doc = new PDFDocument({
   size: "A4",
@@ -11,7 +18,8 @@ const doc = new PDFDocument({
   },
 });
 
-const stream = fs.createWriteStream("public/ScoutPro_Documentation.pdf");
+const outputPath = path.join(publicDir, "ScoutPro_Documentation.pdf");
+const stream = fs.createWriteStream(outputPath);
 doc.pipe(stream);
 
 // ── Colors ──
@@ -209,18 +217,18 @@ heading1("2. Technology Stack");
 
 heading2("Core Framework");
 tableRow(["Technology", "Details"], true);
-tableRow(["React", "v19 — UI library"]);
-tableRow(["TypeScript", "v5.7 — Type-safe JavaScript"]);
-tableRow(["Vite", "v6 — Build tool & dev server"]);
-tableRow(["React Router DOM", "v7 — Client-side routing"]);
+tableRow(["React", "v19 -- UI library"]);
+tableRow(["TypeScript", "v5.7 -- Type-safe JavaScript"]);
+tableRow(["Vite", "v6 -- Build tool & dev server"]);
+tableRow(["React Router DOM", "v7 -- Client-side routing"]);
 
 doc.moveDown(0.4);
 
 heading2("Styling & UI");
 tableRow(["Technology", "Details"], true);
-tableRow(["Tailwind CSS", "v3.4 — Utility-first CSS"]);
+tableRow(["Tailwind CSS", "v3.4 -- Utility-first CSS"]);
 tableRow(["shadcn/ui", "Radix-based UI component library"]);
-tableRow(["Recharts", "v2.15 — Chart library"]);
+tableRow(["Recharts", "v2.15 -- Chart library"]);
 tableRow(["Lucide React", "Icon library"]);
 tableRow(["tailwindcss-animate", "Animation utilities"]);
 tableRow(["class-variance-authority", "Component variant management"]);
@@ -443,7 +451,8 @@ code(
   "  nationalityFlag: string    // ISO country code\n" +
   "  club: string\n" +
   "  clubLogo: string           // Club abbreviation\n" +
-  '  position: "forward" | "midfielder" | "defender" | "goalkeeper"\n' +
+  '  position: "forward" | "midfielder"\n' +
+  '            | "defender" | "goalkeeper"\n' +
   "  height: number             // in cm\n" +
   "  weight: number             // in kg\n" +
   '  foot: "Left" | "Right" | "Both"\n' +
@@ -466,7 +475,7 @@ code(
   "    rating: number           // e.g. 8.2\n" +
   "  }\n" +
   "  history: {\n" +
-  '    season: string           // e.g. "2024/25"\n' +
+  '    season: string           // "2024/25"\n' +
   "    club: string\n" +
   "    appearances: number\n" +
   "    goals: number\n" +
@@ -647,7 +656,7 @@ code(
 
 heading2("TypeScript Configuration");
 body(
-  "TypeScript is configured with strict mode. Path aliases map \"@/*\" to \"./src/*\". Target is ES2020 with JSX set to react-jsx."
+  'TypeScript is configured with strict mode. Path aliases map "@/*" to "./src/*". Target is ES2020 with JSX set to react-jsx.'
 );
 
 heading2("Tailwind Configuration");
@@ -679,5 +688,5 @@ for (var i = 0; i < pages.count; i++) {
 doc.end();
 
 stream.on("finish", function () {
-  console.log("PDF generated successfully: public/ScoutPro_Documentation.pdf");
+  console.log("PDF generated: " + outputPath);
 });
