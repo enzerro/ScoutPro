@@ -4,11 +4,9 @@ import { cn } from "../lib/utils"
 import type { Locale } from "../lib/i18n"
 import type { Player } from "../lib/players-data"
 
-type AdminTab = "language" | "content" | "players" | "settings"
-
 // ─── Login ────────────────────────────────────────────────────────────────────
 
-function AdminLogin() {
+export function AdminLogin() {
   const { t, setAdminAuth } = useAppContext()
   const [password, setPassword] = useState("")
   const [error, setError] = useState(false)
@@ -78,7 +76,7 @@ function AdminLogin() {
 
 // ─── Language Tab ─────────────────────────────────────────────────────────────
 
-function LanguageTab() {
+export function LanguageTab() {
   const { t, state, setLocale } = useAppContext()
 
   const locales: { value: Locale; label: string; flag: string }[] = [
@@ -146,7 +144,7 @@ function LanguageTab() {
 
 // ─── Content Tab ──────────────────────────────────────────────────────────────
 
-function ContentTab() {
+export function ContentTab() {
   const { t, state, updateTranslation } = useAppContext()
   const [saved, setSaved] = useState(false)
   const [activeSection, setActiveSection] = useState("hero")
@@ -639,7 +637,7 @@ function IconX() {
   )
 }
 
-function PlayersTab() {
+export function PlayersTab() {
   const { t, state, addPlayer, updatePlayer, deletePlayer } = useAppContext()
   const [editingId, setEditingId] = useState<string | null>(null)
   const [editForm, setEditForm] = useState<PlayerForm>(emptyForm)
@@ -993,7 +991,7 @@ function PlayersTab() {
 
 // ─── Settings Tab ─────────────────────────────────────────────────────────────
 
-function SettingsTab() {
+export function SettingsTab() {
   const { t } = useAppContext()
   const [siteTitle, setSiteTitle] = useState("ScoutPro")
   const [siteDescription, setSiteDescription] = useState(
@@ -1050,137 +1048,4 @@ function SettingsTab() {
   )
 }
 
-// ─── Admin Panel Shell ────────────────────────────────────────────────────────
 
-export function AdminContent() {
-  const { t, state, setAdminAuth } = useAppContext()
-  const [activeTab, setActiveTab] = useState<AdminTab>("language")
-
-  if (!state.isAdminAuthenticated) {
-    return <AdminLogin />
-  }
-
-  const tabs: { id: AdminTab; label: string; icon: React.ReactNode }[] = [
-    {
-      id: "language",
-      label: t.admin.language,
-      icon: (
-        <svg
-          width="16"
-          height="16"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.5"
-        >
-          <circle cx="12" cy="12" r="10" />
-          <path d="M2 12h20M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z" />
-        </svg>
-      ),
-    },
-    {
-      id: "content",
-      label: t.admin.content,
-      icon: (
-        <svg
-          width="16"
-          height="16"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.5"
-        >
-          <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" />
-          <path d="M14 2v6h6M16 13H8M16 17H8M10 9H8" />
-        </svg>
-      ),
-    },
-    {
-      id: "players",
-      label: t.admin.players_management,
-      icon: (
-        <svg
-          width="16"
-          height="16"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.5"
-        >
-          <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" />
-          <circle cx="9" cy="7" r="4" />
-          <path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75" />
-        </svg>
-      ),
-    },
-    {
-      id: "settings",
-      label: t.admin.settings,
-      icon: (
-        <svg
-          width="16"
-          height="16"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.5"
-        >
-          <circle cx="12" cy="12" r="3" />
-          <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z" />
-        </svg>
-      ),
-    },
-  ]
-
-  return (
-    <div className="mx-auto max-w-7xl px-4 py-8 lg:px-8">
-      {/* Header */}
-      <div className="mb-8 flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-foreground md:text-3xl">
-            {t.admin.title}
-          </h1>
-          <p className="mt-1 text-sm text-muted-foreground">
-            {t.admin.current_language}: {state.locale.toUpperCase()}
-          </p>
-        </div>
-        <button
-          onClick={() => setAdminAuth(false)}
-          className="rounded-lg border border-border bg-transparent px-4 py-2 text-xs font-semibold text-muted-foreground transition-colors hover:border-destructive/40 hover:text-destructive"
-        >
-          {t.admin.logout}
-        </button>
-      </div>
-
-      {/* Layout */}
-      <div className="flex flex-col gap-6 lg:flex-row">
-        {/* Sidebar nav */}
-        <nav className="flex shrink-0 gap-1 overflow-x-auto rounded-xl border border-border bg-card p-1 lg:w-56 lg:flex-col lg:overflow-x-visible">
-          {tabs.map((tab) => (
-            <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
-              className={cn(
-                "flex items-center gap-2 whitespace-nowrap rounded-lg px-4 py-2.5 text-xs font-medium transition-all",
-                activeTab === tab.id
-                  ? "bg-primary text-primary-foreground"
-                  : "text-muted-foreground hover:bg-secondary hover:text-foreground"
-              )}
-            >
-              {tab.icon}
-              {tab.label}
-            </button>
-          ))}
-        </nav>
-
-        {/* Tab content */}
-        <div className="min-w-0 flex-1">
-          {activeTab === "language" && <LanguageTab />}
-          {activeTab === "content" && <ContentTab />}
-          {activeTab === "players" && <PlayersTab />}
-          {activeTab === "settings" && <SettingsTab />}
-        </div>
-      </div>
-    </div>
-  )
-}
