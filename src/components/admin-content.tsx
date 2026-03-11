@@ -361,6 +361,109 @@ function PlayerFormFields({
   )
 }
 
+// ─── Photo Uploader ───────────────────────────────────────────────────────────
+
+function PhotoUploader({
+  currentImage,
+  preview,
+  onSelect,
+}: {
+  currentImage: string
+  preview: string | null
+  onSelect: (dataUrl: string) => void
+}) {
+  const inputRef = React.useRef<HTMLInputElement>(null)
+  const [isDragging, setIsDragging] = React.useState(false)
+
+  const processFile = (file: File) => {
+    if (!file.type.startsWith("image/")) return
+    const reader = new FileReader()
+    reader.onload = (e) => {
+      const result = e.target?.result
+      if (typeof result === "string") onSelect(result)
+    }
+    reader.readAsDataURL(file)
+  }
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (file) processFile(file)
+  }
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault()
+    setIsDragging(false)
+    const file = e.dataTransfer.files?.[0]
+    if (file) processFile(file)
+  }
+
+  const displaySrc = preview ?? currentImage
+  const hasPhoto = Boolean(displaySrc)
+
+  return (
+    <div className="flex items-start gap-4">
+      {/* Preview */}
+      <div className="h-20 w-20 shrink-0 overflow-hidden rounded-xl border-2 border-border bg-secondary">
+        {hasPhoto ? (
+          <img
+            src={displaySrc}
+            alt="Player photo"
+            className="h-full w-full object-cover"
+          />
+        ) : (
+          <div className="flex h-full w-full items-center justify-center text-muted-foreground">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+              <circle cx="12" cy="8" r="4" />
+              <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" />
+            </svg>
+          </div>
+        )}
+      </div>
+
+      {/* Drop zone */}
+      <div className="flex-1">
+        <input
+          ref={inputRef}
+          type="file"
+          accept="image/*"
+          className="hidden"
+          onChange={handleFileChange}
+        />
+        <div
+          onDragOver={(e) => { e.preventDefault(); setIsDragging(true) }}
+          onDragLeave={() => setIsDragging(false)}
+          onDrop={handleDrop}
+          className={cn(
+            "flex cursor-pointer flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed px-4 py-4 transition-colors",
+            isDragging
+              ? "border-primary bg-primary/5"
+              : "border-border hover:border-primary/40 hover:bg-secondary/40"
+          )}
+          onClick={() => inputRef.current?.click()}
+        >
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-muted-foreground">
+            <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
+            <polyline points="17 8 12 3 7 8" />
+            <line x1="12" y1="3" x2="12" y2="15" />
+          </svg>
+          <div className="text-center">
+            <p className="text-xs font-semibold text-foreground">Upload Photo</p>
+            <p className="text-[10px] text-muted-foreground">
+              {preview ? "Photo selected — click to replace" : "Click or drag & drop an image"}
+            </p>
+          </div>
+        </div>
+        {preview && (
+          <p className="mt-1.5 flex items-center gap-1 text-[10px] text-primary">
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="20 6 9 17 4 12" /></svg>
+            New photo selected — will save with player
+          </p>
+        )}
+      </div>
+    </div>
+  )
+}
+
 // Icon helpers
 function IconEdit() {
   return (
@@ -403,6 +506,7 @@ function PlayersTab() {
   const { t, state, addPlayer, updatePlayer, deletePlayer } = useAppContext()
   const [editingId, setEditingId] = useState<string | null>(null)
   const [editForm, setEditForm] = useState<PlayerForm>(emptyForm)
+  const [editPhoto, setEditPhoto] = useState<string | null>(null)
   const [showAdd, setShowAdd] = useState(false)
   const [addForm, setAddForm] = useState<PlayerForm>(emptyForm)
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null)
@@ -442,6 +546,7 @@ function PlayersTab() {
   const startEdit = (player: Player) => {
     setEditingId(player.id)
     setConfirmDeleteId(null)
+    setEditPhoto(null)
     setEditForm({
       name: player.name,
       age: String(player.age),
@@ -461,12 +566,14 @@ function PlayersTab() {
       club: editForm.club.trim() || original.club,
       position: editForm.position,
       nationality: editForm.nationality.trim() || original.nationality,
+      ...(editPhoto ? { image: editPhoto } : {}),
       seasonStats: {
         ...original.seasonStats,
         rating: parseFloat(editForm.rating) || original.seasonStats.rating,
       },
     })
     setEditingId(null)
+    setEditPhoto(null)
   }
 
   const handleDelete = (id: string) => {
@@ -575,10 +682,23 @@ function PlayersTab() {
                     )}
                   >
                     <td className="px-4 py-3">
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-2.5">
                         {editingId === player.id && (
                           <div className="h-1.5 w-1.5 shrink-0 rounded-full bg-primary" />
                         )}
+                        <div className="h-8 w-8 shrink-0 overflow-hidden rounded-lg bg-secondary">
+                          {player.image ? (
+                            <img
+                              src={player.image}
+                              alt={player.name}
+                              className="h-full w-full object-cover"
+                            />
+                          ) : (
+                            <div className="flex h-full w-full items-center justify-center text-[10px] font-bold text-muted-foreground">
+                              {player.name.split(" ").map((n) => n[0]).join("").slice(0, 2).toUpperCase()}
+                            </div>
+                          )}
+                        </div>
                         <span className="font-medium text-foreground">{player.name}</span>
                       </div>
                     </td>
@@ -666,6 +786,15 @@ function PlayersTab() {
                           </div>
 
                           <PlayerFormFields form={editForm} onChange={setEditForm} t={t} />
+
+                          <div className="mt-4 border-t border-border pt-4">
+                            <FieldLabel>Photo</FieldLabel>
+                            <PhotoUploader
+                              currentImage={player.image}
+                              preview={editPhoto}
+                              onSelect={setEditPhoto}
+                            />
+                          </div>
 
                           <div className="mt-4 flex items-center gap-2 border-t border-border pt-4">
                             <button
