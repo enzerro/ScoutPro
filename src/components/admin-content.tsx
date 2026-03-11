@@ -246,12 +246,25 @@ function ContentTab() {
 // ─── Players Tab ──────────────────────────────────────────────────────────────
 
 type PlayerForm = {
+  // Basic info
   name: string
   age: string
   club: string
   position: Player["position"]
   nationality: string
+  // Season stats
+  appearances: string
+  goals: string
+  assists: string
+  cleanSheets: string
   rating: string
+  // Attributes
+  pace: string
+  shooting: string
+  passing: string
+  dribbling: string
+  defending: string
+  physical: string
 }
 
 const emptyForm: PlayerForm = {
@@ -260,7 +273,17 @@ const emptyForm: PlayerForm = {
   club: "",
   position: "forward",
   nationality: "",
+  appearances: "0",
+  goals: "0",
+  assists: "0",
+  cleanSheets: "0",
   rating: "7.0",
+  pace: "70",
+  shooting: "70",
+  passing: "70",
+  dribbling: "70",
+  defending: "70",
+  physical: "70",
 }
 
 function FieldLabel({ children }: { children: React.ReactNode }) {
@@ -299,64 +322,178 @@ function FormInput({
   )
 }
 
+function StatSlider({
+  label,
+  value,
+  onChange,
+}: {
+  label: string
+  value: string
+  onChange: (v: string) => void
+}) {
+  const num = Math.min(99, Math.max(0, parseInt(value) || 0))
+  const pct = (num / 99) * 100
+
+  const color =
+    num >= 85
+      ? "bg-emerald-500"
+      : num >= 70
+      ? "bg-primary"
+      : num >= 50
+      ? "bg-amber-500"
+      : "bg-red-500"
+
+  return (
+    <div className="flex items-center gap-3">
+      <span className="w-20 shrink-0 text-[11px] text-muted-foreground">{label}</span>
+      <div className="relative flex-1">
+        <div className="h-1.5 w-full overflow-hidden rounded-full bg-secondary">
+          <div
+            className={cn("h-full rounded-full transition-all", color)}
+            style={{ width: `${pct}%` }}
+          />
+        </div>
+        <input
+          type="range"
+          min="0"
+          max="99"
+          value={num}
+          onChange={(e) => onChange(e.target.value)}
+          className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
+        />
+      </div>
+      <input
+        type="number"
+        min="0"
+        max="99"
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        className="w-12 shrink-0 rounded-md border border-border bg-background px-2 py-1 text-center text-xs font-bold text-foreground outline-none focus:border-primary"
+      />
+    </div>
+  )
+}
+
+type EditFormTab = "info" | "season" | "attributes"
+
 function PlayerFormFields({
   form,
   onChange,
   t,
+  mode = "add",
 }: {
   form: PlayerForm
   onChange: (form: PlayerForm) => void
   t: ReturnType<typeof useAppContext>["t"]
+  mode?: "add" | "edit"
 }) {
+  const [activeSection, setActiveSection] = useState<EditFormTab>("info")
+
+  const sections: { id: EditFormTab; label: string }[] = [
+    { id: "info", label: "Info" },
+    { id: "season", label: "Season Stats" },
+    { id: "attributes", label: "Attributes" },
+  ]
+
   return (
-    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-      <div>
-        <FieldLabel>{t.admin.player_name}</FieldLabel>
-        <FormInput value={form.name} onChange={(v) => onChange({ ...form, name: v })} />
-      </div>
-      <div>
-        <FieldLabel>{t.admin.player_age}</FieldLabel>
-        <FormInput
-          type="number"
-          value={form.age}
-          onChange={(v) => onChange({ ...form, age: v })}
-        />
-      </div>
-      <div>
-        <FieldLabel>{t.admin.player_club}</FieldLabel>
-        <FormInput value={form.club} onChange={(v) => onChange({ ...form, club: v })} />
-      </div>
-      <div>
-        <FieldLabel>{t.admin.player_position}</FieldLabel>
-        <select
-          value={form.position}
-          onChange={(e) => onChange({ ...form, position: e.target.value as Player["position"] })}
-          className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground outline-none transition-colors focus:border-primary focus:ring-1 focus:ring-primary/20"
-        >
-          <option value="forward">{t.players.forward}</option>
-          <option value="midfielder">{t.players.midfielder}</option>
-          <option value="defender">{t.players.defender}</option>
-          <option value="goalkeeper">{t.players.goalkeeper}</option>
-        </select>
-      </div>
-      <div>
-        <FieldLabel>{t.admin.player_nationality}</FieldLabel>
-        <FormInput
-          value={form.nationality}
-          onChange={(v) => onChange({ ...form, nationality: v })}
-        />
-      </div>
-      <div>
-        <FieldLabel>{t.admin.player_rating}</FieldLabel>
-        <FormInput
-          type="number"
-          step="0.1"
-          min="0"
-          max="10"
-          value={form.rating}
-          onChange={(v) => onChange({ ...form, rating: v })}
-        />
-      </div>
+    <div>
+      {/* Section tabs — only show in edit mode for full control */}
+      {mode === "edit" && (
+        <div className="mb-4 flex gap-1 rounded-lg border border-border bg-secondary/50 p-1">
+          {sections.map((s) => (
+            <button
+              key={s.id}
+              type="button"
+              onClick={() => setActiveSection(s.id)}
+              className={cn(
+                "flex-1 rounded-md py-1.5 text-[11px] font-semibold transition-all",
+                activeSection === s.id
+                  ? "bg-primary text-primary-foreground"
+                  : "text-muted-foreground hover:text-foreground"
+              )}
+            >
+              {s.label}
+            </button>
+          ))}
+        </div>
+      )}
+
+      {/* Info */}
+      {(mode === "add" || activeSection === "info") && (
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <div>
+            <FieldLabel>{t.admin.player_name}</FieldLabel>
+            <FormInput value={form.name} onChange={(v) => onChange({ ...form, name: v })} />
+          </div>
+          <div>
+            <FieldLabel>{t.admin.player_age}</FieldLabel>
+            <FormInput type="number" value={form.age} onChange={(v) => onChange({ ...form, age: v })} />
+          </div>
+          <div>
+            <FieldLabel>{t.admin.player_club}</FieldLabel>
+            <FormInput value={form.club} onChange={(v) => onChange({ ...form, club: v })} />
+          </div>
+          <div>
+            <FieldLabel>{t.admin.player_position}</FieldLabel>
+            <select
+              value={form.position}
+              onChange={(e) => onChange({ ...form, position: e.target.value as Player["position"] })}
+              className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground outline-none transition-colors focus:border-primary focus:ring-1 focus:ring-primary/20"
+            >
+              <option value="forward">{t.players.forward}</option>
+              <option value="midfielder">{t.players.midfielder}</option>
+              <option value="defender">{t.players.defender}</option>
+              <option value="goalkeeper">{t.players.goalkeeper}</option>
+            </select>
+          </div>
+          <div>
+            <FieldLabel>{t.admin.player_nationality}</FieldLabel>
+            <FormInput value={form.nationality} onChange={(v) => onChange({ ...form, nationality: v })} />
+          </div>
+          <div>
+            <FieldLabel>{t.admin.player_rating}</FieldLabel>
+            <FormInput type="number" step="0.1" min="0" max="10" value={form.rating} onChange={(v) => onChange({ ...form, rating: v })} />
+          </div>
+        </div>
+      )}
+
+      {/* Season Stats */}
+      {mode === "edit" && activeSection === "season" && (
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <div>
+            <FieldLabel>{t.profile.appearances}</FieldLabel>
+            <FormInput type="number" min="0" value={form.appearances} onChange={(v) => onChange({ ...form, appearances: v })} />
+          </div>
+          <div>
+            <FieldLabel>{t.profile.goals}</FieldLabel>
+            <FormInput type="number" min="0" value={form.goals} onChange={(v) => onChange({ ...form, goals: v })} />
+          </div>
+          <div>
+            <FieldLabel>{t.profile.assists}</FieldLabel>
+            <FormInput type="number" min="0" value={form.assists} onChange={(v) => onChange({ ...form, assists: v })} />
+          </div>
+          <div>
+            <FieldLabel>Clean Sheets</FieldLabel>
+            <FormInput type="number" min="0" value={form.cleanSheets} onChange={(v) => onChange({ ...form, cleanSheets: v })} />
+          </div>
+          <div>
+            <FieldLabel>{t.admin.player_rating}</FieldLabel>
+            <FormInput type="number" step="0.1" min="0" max="10" value={form.rating} onChange={(v) => onChange({ ...form, rating: v })} />
+          </div>
+        </div>
+      )}
+
+      {/* Attributes */}
+      {mode === "edit" && activeSection === "attributes" && (
+        <div className="flex flex-col gap-3.5 rounded-xl border border-border bg-secondary/20 p-4">
+          <StatSlider label={t.profile.pace}      value={form.pace}      onChange={(v) => onChange({ ...form, pace: v })} />
+          <StatSlider label={t.profile.shooting}  value={form.shooting}  onChange={(v) => onChange({ ...form, shooting: v })} />
+          <StatSlider label={t.profile.passing}   value={form.passing}   onChange={(v) => onChange({ ...form, passing: v })} />
+          <StatSlider label={t.profile.dribbling} value={form.dribbling} onChange={(v) => onChange({ ...form, dribbling: v })} />
+          <StatSlider label={t.profile.defending} value={form.defending} onChange={(v) => onChange({ ...form, defending: v })} />
+          <StatSlider label={t.profile.physical}  value={form.physical}  onChange={(v) => onChange({ ...form, physical: v })} />
+        </div>
+      )}
     </div>
   )
 }
@@ -528,13 +665,20 @@ function PlayersTab() {
       contractUntil: "2028",
       marketValue: "10M",
       image: "",
-      stats: { pace: 70, shooting: 70, passing: 70, dribbling: 70, defending: 70, physical: 70 },
+      stats: {
+        pace:      parseInt(addForm.pace)      || 70,
+        shooting:  parseInt(addForm.shooting)  || 70,
+        passing:   parseInt(addForm.passing)   || 70,
+        dribbling: parseInt(addForm.dribbling) || 70,
+        defending: parseInt(addForm.defending) || 70,
+        physical:  parseInt(addForm.physical)  || 70,
+      },
       seasonStats: {
-        appearances: 0,
-        goals: 0,
-        assists: 0,
-        cleanSheets: 0,
-        rating: parseFloat(addForm.rating) || 7.0,
+        appearances: parseInt(addForm.appearances) || 0,
+        goals:       parseInt(addForm.goals)       || 0,
+        assists:     parseInt(addForm.assists)      || 0,
+        cleanSheets: parseInt(addForm.cleanSheets) || 0,
+        rating:      parseFloat(addForm.rating)    || 7.0,
       },
       history: [],
     }
@@ -553,7 +697,17 @@ function PlayersTab() {
       club: player.club,
       position: player.position,
       nationality: player.nationality,
+      appearances: String(player.seasonStats.appearances),
+      goals: String(player.seasonStats.goals),
+      assists: String(player.seasonStats.assists),
+      cleanSheets: String(player.seasonStats.cleanSheets),
       rating: String(player.seasonStats.rating),
+      pace: String(player.stats.pace),
+      shooting: String(player.stats.shooting),
+      passing: String(player.stats.passing),
+      dribbling: String(player.stats.dribbling),
+      defending: String(player.stats.defending),
+      physical: String(player.stats.physical),
     })
   }
 
@@ -567,9 +721,20 @@ function PlayersTab() {
       position: editForm.position,
       nationality: editForm.nationality.trim() || original.nationality,
       ...(editPhoto ? { image: editPhoto } : {}),
+      stats: {
+        pace:      Math.min(99, Math.max(0, parseInt(editForm.pace)      || original.stats.pace)),
+        shooting:  Math.min(99, Math.max(0, parseInt(editForm.shooting)  || original.stats.shooting)),
+        passing:   Math.min(99, Math.max(0, parseInt(editForm.passing)   || original.stats.passing)),
+        dribbling: Math.min(99, Math.max(0, parseInt(editForm.dribbling) || original.stats.dribbling)),
+        defending: Math.min(99, Math.max(0, parseInt(editForm.defending) || original.stats.defending)),
+        physical:  Math.min(99, Math.max(0, parseInt(editForm.physical)  || original.stats.physical)),
+      },
       seasonStats: {
-        ...original.seasonStats,
-        rating: parseFloat(editForm.rating) || original.seasonStats.rating,
+        appearances: parseInt(editForm.appearances)  || original.seasonStats.appearances,
+        goals:       parseInt(editForm.goals)        || original.seasonStats.goals,
+        assists:     parseInt(editForm.assists)      || original.seasonStats.assists,
+        cleanSheets: parseInt(editForm.cleanSheets)  || original.seasonStats.cleanSheets,
+        rating:      parseFloat(editForm.rating)     || original.seasonStats.rating,
       },
     })
     setEditingId(null)
@@ -785,7 +950,7 @@ function PlayersTab() {
                             </button>
                           </div>
 
-                          <PlayerFormFields form={editForm} onChange={setEditForm} t={t} />
+                          <PlayerFormFields form={editForm} onChange={setEditForm} t={t} mode="edit" />
 
                           <div className="mt-4 border-t border-border pt-4">
                             <FieldLabel>Photo</FieldLabel>
