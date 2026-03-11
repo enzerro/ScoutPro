@@ -1,6 +1,4 @@
-"use client"
-
-import { useAppContext } from "@/lib/store"
+import { useAppContext } from "../lib/store"
 
 const featureIcons = [
   <svg key="analytics" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">

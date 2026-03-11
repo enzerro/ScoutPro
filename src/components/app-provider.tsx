@@ -1,13 +1,9 @@
-"use client"
-
-import React from "react"
-
-import { useState, useCallback, useMemo } from "react"
-import type { Locale } from "@/lib/i18n"
-import { translations } from "@/lib/i18n"
-import type { Player } from "@/lib/players-data"
-import { defaultPlayers } from "@/lib/players-data"
-import { AppContext, type AppState, type AppContextType } from "@/lib/store"
+import React, { useState, useCallback, useMemo } from "react"
+import type { Locale } from "../lib/i18n"
+import { translations } from "../lib/i18n"
+import type { Player } from "../lib/players-data"
+import { defaultPlayers } from "../lib/players-data"
+import { AppContext, type AppState, type AppContextType } from "../lib/store"
 
 export function AppProvider({ children }: { children: React.ReactNode }) {
   const [state, setState] = useState<AppState>({
@@ -105,5 +101,9 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     [state, setLocale, setPlayers, addPlayer, updatePlayer, deletePlayer, toggleCompare, clearCompare, updateTranslation, setAdminAuth, t]
   )
 
-  return <AppContext value={value}>{children}</AppContext>
+  return (
+    <AppContext.Provider value={value}>
+      {children}
+    </AppContext.Provider>
+  )
 }

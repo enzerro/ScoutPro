@@ -1,5 +1,3 @@
-"use client"
-
 import { createContext, useContext } from "react"
 import type { Locale, Translations } from "./i18n"
 import type { Player } from "./players-data"

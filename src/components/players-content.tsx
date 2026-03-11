@@ -1,9 +1,8 @@
-"use client"
-
 import { useState, useMemo } from "react"
-import { useAppContext } from "@/lib/store"
+import { Link } from "react-router-dom"
+import { useAppContext } from "../lib/store"
 import { PlayerCard } from "./player-card"
-import { cn } from "@/lib/utils"
+import { cn } from "../lib/utils"
 
 type PositionFilter = "all" | "forward" | "midfielder" | "defender" | "goalkeeper"
 type SortKey = "rating" | "age" | "name"
@@ -178,7 +177,7 @@ export function PlayersContent() {
   )
 }
 
-function PlayerListRow({ player }: { player: import("@/lib/players-data").Player }) {
+function PlayerListRow({ player }: { player: import("../lib/players-data").Player }) {
   const { t, state, toggleCompare } = useAppContext()
   const isInCompare = state.compareList.includes(player.id)
   const overall = Math.round(
@@ -214,12 +213,12 @@ function PlayerListRow({ player }: { player: import("@/lib/players-data").Player
         </div>
       </div>
       <div className="flex gap-2">
-        <a
-          href={`/players/${player.id}`}
+        <Link
+          to={`/players/${player.id}`}
           className="rounded-lg bg-primary px-3 py-1.5 text-xs font-semibold text-primary-foreground transition-colors hover:bg-primary/80"
         >
           {t.players.view_profile}
-        </a>
+        </Link>
         <button
           onClick={() => toggleCompare(player.id)}
           className={cn(
