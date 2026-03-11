@@ -263,6 +263,42 @@ const emptyForm: PlayerForm = {
   rating: "7.0",
 }
 
+function FieldLabel({ children }: { children: React.ReactNode }) {
+  return (
+    <label className="mb-1 block text-[10px] font-medium uppercase tracking-wide text-muted-foreground">
+      {children}
+    </label>
+  )
+}
+
+function FormInput({
+  value,
+  onChange,
+  type = "text",
+  step,
+  min,
+  max,
+}: {
+  value: string
+  onChange: (v: string) => void
+  type?: string
+  step?: string
+  min?: string
+  max?: string
+}) {
+  return (
+    <input
+      type={type}
+      value={value}
+      step={step}
+      min={min}
+      max={max}
+      onChange={(e) => onChange(e.target.value)}
+      className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground outline-none transition-colors focus:border-primary focus:ring-1 focus:ring-primary/20"
+    />
+  )
+}
+
 function PlayerFormFields({
   form,
   onChange,
@@ -273,50 +309,29 @@ function PlayerFormFields({
   t: ReturnType<typeof useAppContext>["t"]
 }) {
   return (
-    <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
       <div>
-        <label className="mb-1 block text-[10px] text-muted-foreground">
-          {t.admin.player_name}
-        </label>
-        <input
-          type="text"
-          value={form.name}
-          onChange={(e) => onChange({ ...form, name: e.target.value })}
-          className="w-full rounded-lg border border-border bg-secondary px-3 py-2 text-xs text-foreground outline-none focus:border-primary"
-        />
+        <FieldLabel>{t.admin.player_name}</FieldLabel>
+        <FormInput value={form.name} onChange={(v) => onChange({ ...form, name: v })} />
       </div>
       <div>
-        <label className="mb-1 block text-[10px] text-muted-foreground">
-          {t.admin.player_age}
-        </label>
-        <input
+        <FieldLabel>{t.admin.player_age}</FieldLabel>
+        <FormInput
           type="number"
           value={form.age}
-          onChange={(e) => onChange({ ...form, age: e.target.value })}
-          className="w-full rounded-lg border border-border bg-secondary px-3 py-2 text-xs text-foreground outline-none focus:border-primary"
+          onChange={(v) => onChange({ ...form, age: v })}
         />
       </div>
       <div>
-        <label className="mb-1 block text-[10px] text-muted-foreground">
-          {t.admin.player_club}
-        </label>
-        <input
-          type="text"
-          value={form.club}
-          onChange={(e) => onChange({ ...form, club: e.target.value })}
-          className="w-full rounded-lg border border-border bg-secondary px-3 py-2 text-xs text-foreground outline-none focus:border-primary"
-        />
+        <FieldLabel>{t.admin.player_club}</FieldLabel>
+        <FormInput value={form.club} onChange={(v) => onChange({ ...form, club: v })} />
       </div>
       <div>
-        <label className="mb-1 block text-[10px] text-muted-foreground">
-          {t.admin.player_position}
-        </label>
+        <FieldLabel>{t.admin.player_position}</FieldLabel>
         <select
           value={form.position}
-          onChange={(e) =>
-            onChange({ ...form, position: e.target.value as Player["position"] })
-          }
-          className="w-full rounded-lg border border-border bg-secondary px-3 py-2 text-xs text-foreground outline-none focus:border-primary"
+          onChange={(e) => onChange({ ...form, position: e.target.value as Player["position"] })}
+          className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground outline-none transition-colors focus:border-primary focus:ring-1 focus:ring-primary/20"
         >
           <option value="forward">{t.players.forward}</option>
           <option value="midfielder">{t.players.midfielder}</option>
@@ -325,31 +340,62 @@ function PlayerFormFields({
         </select>
       </div>
       <div>
-        <label className="mb-1 block text-[10px] text-muted-foreground">
-          {t.admin.player_nationality}
-        </label>
-        <input
-          type="text"
+        <FieldLabel>{t.admin.player_nationality}</FieldLabel>
+        <FormInput
           value={form.nationality}
-          onChange={(e) => onChange({ ...form, nationality: e.target.value })}
-          className="w-full rounded-lg border border-border bg-secondary px-3 py-2 text-xs text-foreground outline-none focus:border-primary"
+          onChange={(v) => onChange({ ...form, nationality: v })}
         />
       </div>
       <div>
-        <label className="mb-1 block text-[10px] text-muted-foreground">
-          {t.admin.player_rating}
-        </label>
-        <input
+        <FieldLabel>{t.admin.player_rating}</FieldLabel>
+        <FormInput
           type="number"
           step="0.1"
           min="0"
           max="10"
           value={form.rating}
-          onChange={(e) => onChange({ ...form, rating: e.target.value })}
-          className="w-full rounded-lg border border-border bg-secondary px-3 py-2 text-xs text-foreground outline-none focus:border-primary"
+          onChange={(v) => onChange({ ...form, rating: v })}
         />
       </div>
     </div>
+  )
+}
+
+// Icon helpers
+function IconEdit() {
+  return (
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" />
+      <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" />
+    </svg>
+  )
+}
+
+function IconTrash() {
+  return (
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <polyline points="3 6 5 6 21 6" />
+      <path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6" />
+      <path d="M10 11v6M14 11v6" />
+      <path d="M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2" />
+    </svg>
+  )
+}
+
+function IconCheck() {
+  return (
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+      <polyline points="20 6 9 17 4 12" />
+    </svg>
+  )
+}
+
+function IconX() {
+  return (
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+      <line x1="18" y1="6" x2="6" y2="18" />
+      <line x1="6" y1="6" x2="18" y2="18" />
+    </svg>
   )
 }
 
@@ -378,14 +424,7 @@ function PlayersTab() {
       contractUntil: "2028",
       marketValue: "10M",
       image: "",
-      stats: {
-        pace: 70,
-        shooting: 70,
-        passing: 70,
-        dribbling: 70,
-        defending: 70,
-        physical: 70,
-      },
+      stats: { pace: 70, shooting: 70, passing: 70, dribbling: 70, defending: 70, physical: 70 },
       seasonStats: {
         appearances: 0,
         goals: 0,
@@ -402,6 +441,7 @@ function PlayersTab() {
 
   const startEdit = (player: Player) => {
     setEditingId(player.id)
+    setConfirmDeleteId(null)
     setEditForm({
       name: player.name,
       age: String(player.age),
@@ -413,86 +453,90 @@ function PlayersTab() {
   }
 
   const saveEdit = (id: string) => {
+    const original = state.players.find((p) => p.id === id)
+    if (!original) return
     updatePlayer(id, {
-      name: editForm.name.trim(),
-      age: parseInt(editForm.age) || 20,
-      club: editForm.club.trim(),
+      name: editForm.name.trim() || original.name,
+      age: parseInt(editForm.age) || original.age,
+      club: editForm.club.trim() || original.club,
       position: editForm.position,
-      nationality: editForm.nationality.trim(),
+      nationality: editForm.nationality.trim() || original.nationality,
       seasonStats: {
-        ...state.players.find((p) => p.id === id)!.seasonStats,
-        rating: parseFloat(editForm.rating) || 7.0,
+        ...original.seasonStats,
+        rating: parseFloat(editForm.rating) || original.seasonStats.rating,
       },
     })
     setEditingId(null)
   }
 
   const handleDelete = (id: string) => {
+    if (editingId === id) setEditingId(null)
     deletePlayer(id)
     setConfirmDeleteId(null)
+  }
+
+  const POSITION_COLOR: Record<Player["position"], string> = {
+    forward: "bg-orange-500/15 text-orange-400",
+    midfielder: "bg-blue-500/15 text-blue-400",
+    defender: "bg-green-500/15 text-green-400",
+    goalkeeper: "bg-purple-500/15 text-purple-400",
   }
 
   return (
     <div className="flex flex-col gap-4">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <h3 className="text-sm font-semibold text-foreground">
-          {t.admin.players_management}
-        </h3>
+        <div>
+          <h3 className="text-sm font-semibold text-foreground">
+            {t.admin.players_management}
+          </h3>
+          <p className="mt-0.5 text-[11px] text-muted-foreground">
+            {state.players.length} players
+          </p>
+        </div>
         <button
           onClick={() => {
-            setShowAdd(!showAdd)
+            setShowAdd((prev) => !prev)
             setAddForm(emptyForm)
+            setEditingId(null)
           }}
-          className="rounded-lg bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground transition-colors hover:bg-primary/80"
+          className={cn(
+            "flex items-center gap-1.5 rounded-lg px-4 py-2 text-xs font-semibold transition-colors",
+            showAdd
+              ? "bg-secondary text-foreground"
+              : "bg-primary text-primary-foreground hover:bg-primary/80"
+          )}
         >
-          + {t.admin.add_player}
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+            <line x1="12" y1="5" x2="12" y2="19" />
+            <line x1="5" y1="12" x2="19" y2="12" />
+          </svg>
+          {t.admin.add_player}
         </button>
       </div>
 
       {/* Add form */}
       {showAdd && (
-        <div className="rounded-xl border border-primary/20 bg-card p-5">
-          <h4 className="mb-3 text-xs font-semibold text-foreground">
-            {t.admin.add_player}
-          </h4>
+        <div className="rounded-xl border border-primary/30 bg-card p-5 shadow-sm">
+          <div className="mb-4 flex items-center gap-2">
+            <div className="h-1.5 w-1.5 rounded-full bg-primary" />
+            <h4 className="text-xs font-semibold text-foreground">{t.admin.add_player}</h4>
+          </div>
           <PlayerFormFields form={addForm} onChange={setAddForm} t={t} />
-          <div className="mt-4 flex gap-2">
+          <div className="mt-5 flex items-center gap-2 border-t border-border pt-4">
             <button
               onClick={handleAdd}
               disabled={!addForm.name.trim() || !addForm.club.trim()}
-              className="rounded-lg bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground transition-colors hover:bg-primary/80 disabled:opacity-50"
+              className="flex items-center gap-1.5 rounded-lg bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground transition-colors hover:bg-primary/80 disabled:cursor-not-allowed disabled:opacity-40"
             >
+              <IconCheck />
               {t.admin.add_player}
             </button>
             <button
               onClick={() => setShowAdd(false)}
-              className="rounded-lg border border-border bg-transparent px-4 py-2 text-xs font-semibold text-muted-foreground transition-colors hover:text-foreground"
+              className="flex items-center gap-1.5 rounded-lg border border-border px-4 py-2 text-xs font-semibold text-muted-foreground transition-colors hover:text-foreground"
             >
-              {t.admin.cancel}
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* Edit form */}
-      {editingId && (
-        <div className="rounded-xl border border-primary/20 bg-card p-5">
-          <h4 className="mb-3 text-xs font-semibold text-foreground">
-            {t.admin.edit_player}
-          </h4>
-          <PlayerFormFields form={editForm} onChange={setEditForm} t={t} />
-          <div className="mt-4 flex gap-2">
-            <button
-              onClick={() => saveEdit(editingId)}
-              className="rounded-lg bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground transition-colors hover:bg-primary/80"
-            >
-              {t.admin.save}
-            </button>
-            <button
-              onClick={() => setEditingId(null)}
-              className="rounded-lg border border-border bg-transparent px-4 py-2 text-xs font-semibold text-muted-foreground transition-colors hover:text-foreground"
-            >
+              <IconX />
               {t.admin.cancel}
             </button>
           </div>
@@ -500,11 +544,11 @@ function PlayersTab() {
       )}
 
       {/* Players table */}
-      <div className="rounded-xl border border-border bg-card">
+      <div className="rounded-xl border border-border bg-card overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left text-sm">
             <thead>
-              <tr className="border-b border-border text-xs text-muted-foreground">
+              <tr className="border-b border-border bg-secondary/40 text-[11px] uppercase tracking-wide text-muted-foreground">
                 <th className="px-4 py-3 font-medium">{t.admin.player_name}</th>
                 <th className="px-4 py-3 font-medium">{t.admin.player_club}</th>
                 <th className="hidden px-4 py-3 font-medium sm:table-cell">
@@ -514,78 +558,136 @@ function PlayersTab() {
                   {t.admin.player_age}
                 </th>
                 <th className="px-4 py-3 font-medium">{t.admin.player_rating}</th>
-                <th className="px-4 py-3 font-medium" />
+                <th className="px-4 py-3 text-right font-medium">Actions</th>
               </tr>
             </thead>
             <tbody>
-              {state.players.map((player) => (
-                <tr
-                  key={player.id}
-                  className="border-b border-border/50 transition-colors hover:bg-secondary/30 last:border-0"
-                >
-                  <td className="px-4 py-3">
-                    <span className="font-medium text-foreground">
-                      {player.name}
-                    </span>
-                  </td>
-                  <td className="px-4 py-3 text-xs text-muted-foreground">
-                    {player.club}
-                  </td>
-                  <td className="hidden px-4 py-3 text-xs text-muted-foreground sm:table-cell">
-                    {t.players[player.position]}
-                  </td>
-                  <td className="hidden px-4 py-3 text-xs text-foreground md:table-cell">
-                    {player.age}
-                  </td>
-                  <td className="px-4 py-3">
-                    <span className="rounded bg-primary/20 px-1.5 py-0.5 text-[10px] font-bold text-primary">
-                      {player.seasonStats.rating}
-                    </span>
-                  </td>
-                  <td className="px-4 py-3">
-                    <div className="flex items-center gap-1">
-                      <button
-                        onClick={() =>
-                          editingId === player.id
-                            ? setEditingId(null)
-                            : startEdit(player)
-                        }
-                        className={cn(
-                          "rounded px-2 py-1 text-[10px] font-semibold transition-colors",
-                          editingId === player.id
-                            ? "bg-primary/20 text-primary"
-                            : "text-muted-foreground hover:bg-secondary hover:text-foreground"
+              {state.players.map((player, index) => (
+                <React.Fragment key={player.id}>
+                  {/* Player row */}
+                  <tr
+                    className={cn(
+                      "border-b border-border/50 transition-colors",
+                      index === state.players.length - 1 && editingId !== player.id && "border-0",
+                      editingId === player.id
+                        ? "bg-primary/5"
+                        : "hover:bg-secondary/30"
+                    )}
+                  >
+                    <td className="px-4 py-3">
+                      <div className="flex items-center gap-2">
+                        {editingId === player.id && (
+                          <div className="h-1.5 w-1.5 shrink-0 rounded-full bg-primary" />
                         )}
-                      >
-                        {t.admin.edit_player}
-                      </button>
-
-                      {confirmDeleteId === player.id ? (
-                        <div className="flex items-center gap-1">
-                          <button
-                            onClick={() => handleDelete(player.id)}
-                            className="rounded bg-destructive px-2 py-1 text-[10px] font-semibold text-destructive-foreground"
-                          >
-                            {t.admin.confirm_delete}
-                          </button>
-                          <button
-                            onClick={() => setConfirmDeleteId(null)}
-                            className="rounded px-2 py-1 text-[10px] text-muted-foreground hover:text-foreground"
-                          >
-                            {t.admin.cancel}
-                          </button>
-                        </div>
-                      ) : (
+                        <span className="font-medium text-foreground">{player.name}</span>
+                      </div>
+                    </td>
+                    <td className="px-4 py-3 text-xs text-muted-foreground">{player.club}</td>
+                    <td className="hidden px-4 py-3 sm:table-cell">
+                      <span className={cn("rounded-md px-2 py-0.5 text-[10px] font-semibold", POSITION_COLOR[player.position])}>
+                        {t.players[player.position]}
+                      </span>
+                    </td>
+                    <td className="hidden px-4 py-3 text-xs text-foreground md:table-cell">
+                      {player.age}
+                    </td>
+                    <td className="px-4 py-3">
+                      <span className="rounded-md bg-primary/15 px-2 py-0.5 text-[11px] font-bold text-primary">
+                        {player.seasonStats.rating}
+                      </span>
+                    </td>
+                    <td className="px-4 py-3">
+                      <div className="flex items-center justify-end gap-1">
+                        {/* Edit toggle */}
                         <button
-                          onClick={() => setConfirmDeleteId(player.id)}
-                          className="rounded px-2 py-1 text-[10px] text-muted-foreground transition-colors hover:text-destructive"
+                          onClick={() =>
+                            editingId === player.id ? setEditingId(null) : startEdit(player)
+                          }
+                          title={t.admin.edit_player}
+                          className={cn(
+                            "flex items-center gap-1 rounded-md px-2.5 py-1.5 text-[11px] font-semibold transition-colors",
+                            editingId === player.id
+                              ? "bg-primary/20 text-primary"
+                              : "text-muted-foreground hover:bg-secondary hover:text-foreground"
+                          )}
                         >
-                          {t.admin.delete_player}
+                          <IconEdit />
+                          {t.admin.edit_player}
                         </button>
-                      )}
-                    </div>
-                  </td>
-                </tr>
+
+                        {/* Delete / confirm */}
+                        {confirmDeleteId === player.id ? (
+                          <div className="flex items-center gap-1">
+                            <button
+                              onClick={() => handleDelete(player.id)}
+                              className="flex items-center gap-1 rounded-md bg-destructive px-2.5 py-1.5 text-[11px] font-semibold text-destructive-foreground transition-opacity hover:opacity-90"
+                            >
+                              <IconCheck />
+                              {t.admin.confirm_delete}
+                            </button>
+                            <button
+                              onClick={() => setConfirmDeleteId(null)}
+                              className="rounded-md px-2.5 py-1.5 text-[11px] text-muted-foreground transition-colors hover:text-foreground"
+                            >
+                              <IconX />
+                            </button>
+                          </div>
+                        ) : (
+                          <button
+                            onClick={() => setConfirmDeleteId(player.id)}
+                            title={t.admin.delete_player}
+                            className="flex items-center gap-1 rounded-md px-2.5 py-1.5 text-[11px] text-muted-foreground transition-colors hover:bg-destructive/10 hover:text-destructive"
+                          >
+                            <IconTrash />
+                          </button>
+                        )}
+                      </div>
+                    </td>
+                  </tr>
+
+                  {/* Inline edit form row */}
+                  {editingId === player.id && (
+                    <tr className="border-b border-primary/20 bg-primary/5">
+                      <td colSpan={6} className="px-4 pb-5 pt-1">
+                        <div className="rounded-xl border border-primary/20 bg-card p-4 shadow-sm">
+                          <div className="mb-4 flex items-center justify-between">
+                            <div className="flex items-center gap-2">
+                              <div className="h-1.5 w-1.5 rounded-full bg-primary" />
+                              <span className="text-xs font-semibold text-foreground">
+                                {t.admin.edit_player}: {player.name}
+                              </span>
+                            </div>
+                            <button
+                              onClick={() => setEditingId(null)}
+                              className="rounded p-1 text-muted-foreground transition-colors hover:text-foreground"
+                            >
+                              <IconX />
+                            </button>
+                          </div>
+
+                          <PlayerFormFields form={editForm} onChange={setEditForm} t={t} />
+
+                          <div className="mt-4 flex items-center gap-2 border-t border-border pt-4">
+                            <button
+                              onClick={() => saveEdit(player.id)}
+                              className="flex items-center gap-1.5 rounded-lg bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground transition-colors hover:bg-primary/80"
+                            >
+                              <IconCheck />
+                              {t.admin.save}
+                            </button>
+                            <button
+                              onClick={() => setEditingId(null)}
+                              className="flex items-center gap-1.5 rounded-lg border border-border px-4 py-2 text-xs font-semibold text-muted-foreground transition-colors hover:text-foreground"
+                            >
+                              <IconX />
+                              {t.admin.cancel}
+                            </button>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                  )}
+                </React.Fragment>
               ))}
             </tbody>
           </table>
