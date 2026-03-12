@@ -125,26 +125,6 @@ export interface Translations {
     contact: string
     rights: string
   }
-  auth: {
-    login_tab: string
-    register_tab: string
-    email: string
-    name: string
-    password: string
-    confirm_password: string
-    login_btn: string
-    register_btn: string
-    switch_to_register: string
-    switch_to_login: string
-    all_fields_required: string
-    invalid_email: string
-    password_too_short: string
-    email_taken: string
-    not_found: string
-    wrong_password: string
-    passwords_no_match: string
-    default_hint: string
-  }
 }
 
 export const translations: Record<Locale, Translations> = {
@@ -273,26 +253,6 @@ export const translations: Record<Locale, Translations> = {
       contact: "Контакты",
       rights: "Все права защищены",
     },
-    auth: {
-      login_tab: "Вход",
-      register_tab: "Регистрация",
-      email: "Email",
-      name: "Имя",
-      password: "Пароль",
-      confirm_password: "Повторите пароль",
-      login_btn: "Войти",
-      register_btn: "Зарегистрироваться",
-      switch_to_register: "Нет аккаунта? Зарегистрируйтесь",
-      switch_to_login: "Уже есть аккаунт? Войдите",
-      all_fields_required: "Заполните все поля",
-      invalid_email: "Некорректный email",
-      password_too_short: "Пароль должен содержать минимум 6 символов",
-      email_taken: "Этот email уже используется",
-      not_found: "Аккаунт с таким email не найден",
-      wrong_password: "Неверный пароль",
-      passwords_no_match: "Пароли не совпадают",
-      default_hint: "Демо-аккаунт: admin@scoutpro.com / admin123",
-    },
   },
   en: {
     nav: {
@@ -419,26 +379,6 @@ export const translations: Record<Locale, Translations> = {
       contact: "Contact",
       rights: "All rights reserved",
     },
-    auth: {
-      login_tab: "Login",
-      register_tab: "Register",
-      email: "Email",
-      name: "Name",
-      password: "Password",
-      confirm_password: "Confirm password",
-      login_btn: "Sign in",
-      register_btn: "Create account",
-      switch_to_register: "No account? Register",
-      switch_to_login: "Already have an account? Sign in",
-      all_fields_required: "Please fill in all fields",
-      invalid_email: "Invalid email address",
-      password_too_short: "Password must be at least 6 characters",
-      email_taken: "This email is already in use",
-      not_found: "No account found with that email",
-      wrong_password: "Incorrect password",
-      passwords_no_match: "Passwords do not match",
-      default_hint: "Demo account: admin@scoutpro.com / admin123",
-    },
   },
   ky: {
     nav: {
@@ -461,7 +401,7 @@ export const translations: Record<Locale, Translations> = {
       title: "Платформанын мүмкүнчүлүктөрү",
       subtitle: "Кесипкөй деңгээлдеги скаутинг куралдары",
       analytics_title: "Өркүндөтүлгөн аналитика",
-      analytics_desc: "Алдыңкы метрикаларды жана маалыматтарды визуалдаштырууну колдонуу менен оюнчулардын статистикасын терең талдоо",
+      analytics_desc: "Алдыңкы метрикаларды жана маалыматтарды визуалдаштыру��ну колдонуу менен оюнчулардын статистикасын терең талдоо",
       database_title: "Оюнчулардын базасы",
       database_desc: "Бүткүл дүйнөдөн 12,000дөн ашык футболчулардын толук профилдери менен кеңири маалымат базасы",
       compare_title: "Салыштыруу куралы",
@@ -564,26 +504,6 @@ export const translations: Record<Locale, Translations> = {
       links: "Шилтемелер",
       contact: "Байланыш",
       rights: "Бардык укуктар корголгон",
-    },
-    auth: {
-      login_tab: "Кирүү",
-      register_tab: "Катталуу",
-      email: "Email",
-      name: "Аты",
-      password: "Сырсөз",
-      confirm_password: "Сырсөздү растаңыз",
-      login_btn: "Кирүү",
-      register_btn: "Катталуу",
-      switch_to_register: "Аккаунт жокпу? Катталыңыз",
-      switch_to_login: "Аккаунт барбы? Кириңиз",
-      all_fields_required: "Бардык талааларды толтуруңуз",
-      invalid_email: "Туура эмес email",
-      password_too_short: "Сырсөз кеминде 6 белгиден турушу керек",
-      email_taken: "Бул email колдонулуп жатат",
-      not_found: "Бул email менен аккаунт табылган жок",
-      wrong_password: "Туура эмес сырсөз",
-      passwords_no_match: "Сырсөздөр дал келбейт",
-      default_hint: "Демо: admin@scoutpro.com / admin123",
     },
   },
 }

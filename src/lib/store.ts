@@ -2,15 +2,6 @@ import { createContext, useContext } from "react"
 import type { Locale, Translations } from "./i18n"
 import type { Player } from "./players-data"
 
-export interface User {
-  id: string
-  email: string
-  name: string
-  passwordHash: string // stored as plain text for client-only demo (no backend)
-  role: "admin"
-  createdAt: string
-}
-
 export interface AppState {
   locale: Locale
   translations: Translations
@@ -18,8 +9,6 @@ export interface AppState {
   players: Player[]
   compareList: string[]
   isAdminAuthenticated: boolean
-  currentUser: User | null
-  users: User[]
 }
 
 export interface AppContextType {
@@ -33,9 +22,6 @@ export interface AppContextType {
   clearCompare: () => void
   updateTranslation: (section: string, key: string, value: string) => void
   setAdminAuth: (auth: boolean) => void
-  registerUser: (email: string, name: string, password: string) => { ok: boolean; error?: string }
-  loginUser: (email: string, password: string) => { ok: boolean; error?: string }
-  logoutUser: () => void
   t: Translations
 }
 

@@ -4,221 +4,70 @@ import { cn } from "../lib/utils"
 import type { Locale } from "../lib/i18n"
 import type { Player } from "../lib/players-data"
 
-// ─── Auth Form ────────────────────────────────────────────────────────────────
-
-type AuthMode = "login" | "register"
-
-function AuthInput({
-  type,
-  value,
-  onChange,
-  placeholder,
-  autoComplete,
-}: {
-  type: string
-  value: string
-  onChange: (v: string) => void
-  placeholder: string
-  autoComplete?: string
-}) {
-  return (
-    <input
-      type={type}
-      value={value}
-      autoComplete={autoComplete}
-      onChange={(e) => onChange(e.target.value)}
-      placeholder={placeholder}
-      className="w-full rounded-xl border border-border bg-secondary/60 px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground outline-none transition-colors focus:border-primary focus:bg-background focus:ring-2 focus:ring-primary/15"
-    />
-  )
-}
+// ─── Login ────────────────────────────────────────────────────────────────────
 
 export function AdminLogin() {
-  const { t, loginUser, registerUser } = useAppContext()
-  const [mode, setMode] = useState<AuthMode>("login")
-
-  const [email, setEmail] = useState("")
-  const [name, setName] = useState("")
+  const { t, setAdminAuth } = useAppContext()
   const [password, setPassword] = useState("")
-  const [confirmPassword, setConfirmPassword] = useState("")
-  const [error, setError] = useState<string | null>(null)
-  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState(false)
 
-  const clearFields = () => {
-    setEmail("")
-    setName("")
-    setPassword("")
-    setConfirmPassword("")
-    setError(null)
-  }
-
-  const switchMode = (next: AuthMode) => {
-    setMode(next)
-    clearFields()
-  }
-
-  // Map error code to translated string
-  const resolveError = (code: string): string => {
-    const map: Record<string, string> = {
-      "auth.all_fields_required": t.auth.all_fields_required,
-      "auth.invalid_email": t.auth.invalid_email,
-      "auth.password_too_short": t.auth.password_too_short,
-      "auth.email_taken": t.auth.email_taken,
-      "auth.not_found": t.auth.not_found,
-      "auth.wrong_password": t.auth.wrong_password,
-      "auth.passwords_no_match": t.auth.passwords_no_match,
-    }
-    return map[code] ?? code
-  }
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setError(null)
-    setLoading(true)
-
-    await new Promise((r) => setTimeout(r, 320)) // subtle loading feel
-
-    if (mode === "login") {
-      const result = loginUser(email, password)
-      if (!result.ok) setError(resolveError(result.error ?? ""))
+  const handleLogin = () => {
+    if (password === "admin123") {
+      setAdminAuth(true)
+      setError(false)
     } else {
-      if (password !== confirmPassword) {
-        setError(t.auth.passwords_no_match)
-        setLoading(false)
-        return
-      }
-      const result = registerUser(email, name, password)
-      if (!result.ok) setError(resolveError(result.error ?? ""))
+      setError(true)
     }
-
-    setLoading(false)
   }
 
   return (
-    <div className="flex min-h-screen w-full items-center justify-center bg-background px-4 py-12">
-      <div className="w-full max-w-md">
-
-        {/* Logo */}
-        <div className="mb-8 flex flex-col items-center gap-3">
-          <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-primary shadow-lg shadow-primary/20">
-            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" className="text-primary-foreground">
-              <path
-                d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"
-                fill="currentColor"
-              />
+    <div className="mx-auto flex max-w-md flex-col items-center justify-center px-4 py-20">
+      <div className="w-full rounded-2xl border border-border bg-card p-8">
+        <div className="mb-6 flex justify-center">
+          <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10">
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              className="text-primary"
+            >
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+              <path d="M7 11V7a5 5 0 0110 0v4" />
             </svg>
-          </div>
-          <div className="text-center">
-            <p className="text-xl font-bold text-foreground">ScoutPro</p>
-            <p className="text-sm text-muted-foreground">{t.admin.title}</p>
           </div>
         </div>
 
-        {/* Card */}
-        <div className="rounded-2xl border border-border bg-card shadow-xl shadow-black/5">
+        <h2 className="mb-1 text-center text-lg font-bold text-foreground">
+          {t.admin.login_title}
+        </h2>
+        <p className="mb-6 text-center text-xs text-muted-foreground">
+          Password: admin123
+        </p>
 
-          {/* Tab switcher */}
-          <div className="flex border-b border-border">
-            {(["login", "register"] as AuthMode[]).map((m) => (
-              <button
-                key={m}
-                type="button"
-                onClick={() => switchMode(m)}
-                className={cn(
-                  "flex-1 py-4 text-sm font-semibold transition-colors",
-                  mode === m
-                    ? "border-b-2 border-primary text-primary"
-                    : "text-muted-foreground hover:text-foreground"
-                )}
-              >
-                {m === "login" ? t.auth.login_tab : t.auth.register_tab}
-              </button>
-            ))}
-          </div>
-
-          {/* Form */}
-          <form onSubmit={handleSubmit} className="flex flex-col gap-4 p-6">
-            <AuthInput
-              type="email"
-              value={email}
-              onChange={setEmail}
-              placeholder={t.auth.email}
-              autoComplete="email"
-            />
-
-            {mode === "register" && (
-              <AuthInput
-                type="text"
-                value={name}
-                onChange={setName}
-                placeholder={t.auth.name}
-                autoComplete="name"
-              />
-            )}
-
-            <AuthInput
-              type="password"
-              value={password}
-              onChange={setPassword}
-              placeholder={t.auth.password}
-              autoComplete={mode === "login" ? "current-password" : "new-password"}
-            />
-
-            {mode === "register" && (
-              <AuthInput
-                type="password"
-                value={confirmPassword}
-                onChange={setConfirmPassword}
-                placeholder={t.auth.confirm_password}
-                autoComplete="new-password"
-              />
-            )}
-
-            {/* Error */}
-            {error && (
-              <div className="flex items-center gap-2 rounded-lg border border-destructive/20 bg-destructive/10 px-3 py-2.5">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="shrink-0 text-destructive">
-                  <circle cx="12" cy="12" r="10" />
-                  <line x1="12" y1="8" x2="12" y2="12" />
-                  <line x1="12" y1="16" x2="12.01" y2="16" />
-                </svg>
-                <p className="text-xs text-destructive">{error}</p>
-              </div>
-            )}
-
-            {/* Submit */}
-            <button
-              type="submit"
-              disabled={loading}
-              className="mt-1 flex items-center justify-center gap-2 rounded-xl bg-primary py-3 text-sm font-semibold text-primary-foreground transition-all hover:bg-primary/85 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-60"
-            >
-              {loading ? (
-                <svg className="animate-spin" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                  <path d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" strokeOpacity="0.2" />
-                  <path d="M12 3a9 9 0 019 9" />
-                </svg>
-              ) : null}
-              {mode === "login" ? t.auth.login_btn : t.auth.register_btn}
-            </button>
-
-            {/* Switch mode link */}
-            <button
-              type="button"
-              onClick={() => switchMode(mode === "login" ? "register" : "login")}
-              className="text-center text-xs text-muted-foreground transition-colors hover:text-foreground"
-            >
-              {mode === "login" ? t.auth.switch_to_register : t.auth.switch_to_login}
-            </button>
-          </form>
-
-          {/* Demo hint */}
-          <div className="flex items-center gap-2 border-t border-border px-6 py-3">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="shrink-0 text-muted-foreground">
-              <circle cx="12" cy="12" r="10" />
-              <path d="M12 16v-4M12 8h.01" />
-            </svg>
-            <p className="text-[11px] text-muted-foreground">{t.auth.default_hint}</p>
-          </div>
+        <div className="flex flex-col gap-3">
+          <input
+            type="password"
+            value={password}
+            onChange={(e) => {
+              setPassword(e.target.value)
+              setError(false)
+            }}
+            onKeyDown={(e) => e.key === "Enter" && handleLogin()}
+            placeholder={t.admin.password}
+            className="w-full rounded-lg border border-border bg-secondary px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground outline-none transition-colors focus:border-primary"
+          />
+          {error && (
+            <p className="text-xs text-destructive">{t.admin.login_error}</p>
+          )}
+          <button
+            onClick={handleLogin}
+            className="rounded-lg bg-primary py-3 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/80"
+          >
+            {t.admin.login}
+          </button>
         </div>
       </div>
     </div>
