@@ -24,7 +24,7 @@ function SidebarIcon({ d, viewBox = '0 0 24 24' }: { d: string | React.ReactNode
 }
 
 export default function AdminPage() {
-  const { t, state, setAdminAuth, setLocale } = useAppContext()
+  const { t, state, logoutUser, setLocale } = useAppContext()
   const [activeTab, setActiveTab] = useState<AdminTab>('players')
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false)
 
@@ -191,18 +191,21 @@ export default function AdminPage() {
 
           {/* User row + logout */}
           <div className="flex items-center gap-2">
-            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary/15">
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
-                <rect x="3" y="11" width="18" height="11" rx="2" />
-                <path d="M7 11V7a5 5 0 0110 0v4" />
-              </svg>
+            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary/15 text-primary">
+              <span className="text-[11px] font-bold uppercase">
+                {state.currentUser?.name?.slice(0, 2) ?? "AD"}
+              </span>
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-xs font-semibold text-foreground">Administrator</p>
-              <p className="text-[10px] text-muted-foreground">admin123</p>
+              <p className="truncate text-xs font-semibold text-foreground">
+                {state.currentUser?.name ?? "Administrator"}
+              </p>
+              <p className="truncate text-[10px] text-muted-foreground">
+                {state.currentUser?.email ?? ""}
+              </p>
             </div>
             <button
-              onClick={() => setAdminAuth(false)}
+              onClick={logoutUser}
               title={t.admin.logout}
               className="rounded-lg p-1.5 text-muted-foreground transition-colors hover:bg-destructive/10 hover:text-destructive"
             >
