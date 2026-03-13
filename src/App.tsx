@@ -1,5 +1,5 @@
 import { Routes, Route, useLocation } from 'react-router-dom'
-import { AppProvider } from './components/app-provider'
+import { AppProvider } from './lib/store'
 import { Navbar } from './components/navbar'
 import { Footer } from './components/footer'
 import HomePage from './pages/HomePage'
