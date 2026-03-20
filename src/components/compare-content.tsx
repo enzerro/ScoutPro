@@ -102,7 +102,7 @@ function PlayerSelector({
   )
 }
 
-function CompareBar({ label, valueA, valueB }: { label: string; valueA: number; valueB: number }) {
+function CompareBar({ valueA, valueB }: { label: string; valueA: number; valueB: number }) {
   const widthA = (valueA / 100) * 100
   const widthB = (valueB / 100) * 100
 

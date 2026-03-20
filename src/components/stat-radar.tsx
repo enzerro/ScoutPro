@@ -27,7 +27,6 @@ export function StatRadar({ stats, size = 200, className, color = "hsl(145, 65%,
   const gridLevels = [20, 40, 60, 80, 100]
 
   const dataPoints = stats.map((s, i) => getPoint(i, s.value))
-  const pathD = dataPoints.map((p, i) => `${i === 0 ? "M" : "L"} ${p.x} ${p.y}`).join(" ") + " Z"
 
   return (
     <div className={cn("relative", className)}>
