@@ -1,10 +1,8 @@
-"use client"
-
 import { useState } from "react"
-import { useAppContext } from "@/lib/store"
+import { useAppContext } from "../lib/store"
 import { StatRadar } from "./stat-radar"
-import { cn } from "@/lib/utils"
-import type { Player } from "@/lib/players-data"
+import { cn } from "../lib/utils"
+import type { Player } from "../lib/players-data"
 
 function PlayerSelector({
   label,
@@ -104,8 +102,7 @@ function PlayerSelector({
   )
 }
 
-function CompareBar({ label, valueA, valueB }: { label: string; valueA: number; valueB: number }) {
-  const maxVal = Math.max(valueA, valueB, 1)
+function CompareBar({ valueA, valueB }: { label: string; valueA: number; valueB: number }) {
   const widthA = (valueA / 100) * 100
   const widthB = (valueB / 100) * 100
 
@@ -140,7 +137,7 @@ function CompareBar({ label, valueA, valueB }: { label: string; valueA: number; 
 }
 
 export function CompareContent() {
-  const { t, state, toggleCompare, clearCompare } = useAppContext()
+  const { t, state } = useAppContext()
   const [playerAId, setPlayerAId] = useState(state.compareList[0] || "")
   const [playerBId, setPlayerBId] = useState(state.compareList[1] || "")
 
