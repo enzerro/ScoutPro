@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useMemo, createContext, useContext } from "react"
+import { useState, useCallback, useMemo, createContext, useContext, type ReactNode } from "react"
 import type { Locale, Translations } from "./i18n"
 import { translations } from "./i18n"
 import type { Player } from "./players-data"
@@ -35,7 +35,7 @@ export function useAppContext() {
   return ctx
 }
 
-export function AppProvider({ children }: { children: React.ReactNode }) {
+export function AppProvider({ children }: { children: ReactNode }) {
   const [state, setState] = useState<AppState>({
     locale: "ru",
     translations: translations.ru,

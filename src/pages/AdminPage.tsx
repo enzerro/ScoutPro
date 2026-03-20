@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, type ReactNode } from 'react'
 import { Link } from 'react-router-dom'
 import { useAppContext } from '../lib/store'
 import { cn } from '../lib/utils'
@@ -15,7 +15,7 @@ type AdminTab = 'players' | 'language' | 'content' | 'settings'
 
 const localeLabels: Record<Locale, string> = { ru: 'RU', en: 'EN', ky: 'KY' }
 
-function SidebarIcon({ d, viewBox = '0 0 24 24' }: { d: string | React.ReactNode; viewBox?: string }) {
+function SidebarIcon({ d, viewBox = '0 0 24 24' }: { d: string | ReactNode; viewBox?: string }) {
   return (
     <svg width="18" height="18" viewBox={viewBox} fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
       {typeof d === 'string' ? <path d={d} /> : d}
