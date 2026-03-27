@@ -1,4 +1,6 @@
 import { useAppContext } from "../lib/store"
+import { useInView } from "../lib/use-in-view"
+import { cn } from "../lib/utils"
 
 const featureIcons = [
   <svg key="analytics" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
@@ -19,8 +21,12 @@ const featureIcons = [
   </svg>,
 ]
 
+const staggerDelays = ["delay-100", "delay-200", "delay-300", "delay-400"]
+
 export function FeaturesSection() {
   const { t } = useAppContext()
+  const [headingRef, headingVisible] = useInView<HTMLDivElement>()
+  const [gridRef, gridVisible] = useInView<HTMLDivElement>({ threshold: 0.1 })
 
   const features = [
     { title: t.features.analytics_title, desc: t.features.analytics_desc, icon: featureIcons[0] },
@@ -32,17 +38,26 @@ export function FeaturesSection() {
   return (
     <section className="border-t border-border bg-card/30">
       <div className="mx-auto max-w-7xl px-4 py-20 lg:px-8">
-        <div className="mb-12 text-center">
+        <div
+          ref={headingRef}
+          className={cn(
+            "mb-12 text-center transition-all duration-500",
+            headingVisible ? "animate-fade-up opacity-100" : "opacity-0 translate-y-4"
+          )}
+        >
           <h2 className="text-balance text-2xl font-bold text-foreground md:text-3xl">{t.features.title}</h2>
           <p className="mt-2 text-sm text-muted-foreground">{t.features.subtitle}</p>
         </div>
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-          {features.map((feature) => (
+        <div ref={gridRef} className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+          {features.map((feature, i) => (
             <div
               key={feature.title}
-              className="group rounded-xl border border-border bg-card p-6 transition-all hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5"
+              className={cn(
+                "group rounded-xl border border-border bg-card p-6 transition-all duration-300 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5 hover:-translate-y-1",
+                gridVisible ? `animate-fade-up ${staggerDelays[i]}` : "opacity-0"
+              )}
             >
-              <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-lg bg-primary/10 text-primary transition-colors group-hover:bg-primary/20">
+              <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-lg bg-primary/10 text-primary transition-all duration-300 group-hover:bg-primary/20 group-hover:scale-110">
                 {feature.icon}
               </div>
               <h3 className="mb-2 text-sm font-semibold text-foreground">{feature.title}</h3>
