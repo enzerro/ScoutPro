@@ -7,10 +7,14 @@ import PlayersPage from './pages/PlayersPage'
 import PlayerProfilePage from './pages/PlayerProfilePage'
 import ComparePage from './pages/ComparePage'
 import AdminPage from './pages/AdminPage'
+import { usePageReload } from './lib/use-page-reload'
 
 function AppShell() {
   const location = useLocation()
   const isAdmin = location.pathname.startsWith('/admin')
+
+  // Trigger a full browser reload on every pathname change.
+  usePageReload()
 
   if (isAdmin) {
     return (
